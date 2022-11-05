@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../static/mini.css">
+    <meta property="og:title" content="임재범 팬명록" />
+    <meta property="og:description" content="응원 한마디 남기고 가세요" />
+    <meta property="og:image" content="http://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2022/09/04/1e65aed8-aa62-42b4-aa0d-7fb67482a85b.jpg" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <title>김민재 소개 페이지</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap"
+          rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .title {
+            width: 100%;
+            height: 50px;
+            text-align: center;
+            background-color: blue;
+        }
+
+        .myimage {
+            margin: 15px 15px 10px 20px;
+            width: 500px;
+
+        }
+
+        .comment {
+            padding: 15px;
+            font-size: large;
+            font-weight: bold;
+            line-height: 40px;
+        }
+
+        .mypost {
+            width: 500px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        .mypost > button {
+            margin: auto;
+            width: 140px;
+        }
+
+        .mycards {
+            width: 95%;
+            max-width: 500px;
+        }
+
+        .back {
+            width: 200px;
+            color: white;
+            background-color: black;
+            border-radius: 5px;
+            margin-left: 600px;
+        }
+        .back:hover {
+            background-color: red;
+        }
+
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            set_temp()
+            show_comment()
+        });
+
+        function set_temp() {
+            $.ajax({
+                type: "GET",
+                url: "http://spartacodingclub.shop/sparta_api/weather/seoul",
+                data: {},
+                success: function (response) {
+                    $('#temp').text(response['temp'])
+                }
+            })
+        }
+
+        function save_comment() {
+            let comment = $('#comment').val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/homework',
+                data: {'comment_give': comment},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            })
+        }
+
+        function show_comment() {
+            $('#comment-list').empty()
+            $.ajax({
+                type: "GET",
+                url: "/homework",
+                data: {},
+                success: function (response) {
+                    let rows = response['comments']
+                    for (let i = 0; i < rows.length; i++) {
+                        let comment = rows[i]['comment']
+                        let temp_html = `<div class="card-body">
+                                            <blockquote class="blockquote mb-0">
+                                                <footer class="blockquote-footer">${comment}</footer>
+                                            </blockquote>
+                                        </div>`
+                        $('#comment-list').append(temp_html)
+                    }
+                }
+            });
+        }
+
+        function backpage() {
+            location.href= "/"
+        }
+
+    </script>
+</head>
+<body>
+    <h1 class="title"> 김민재 A반 9조</h1>
+
+    <div style="float: left">
+        <img class="myimage" src="..\static\ross.jpg" alt="본인 사진"/>
+    </div>
+    <div style="float: left" class="comment">
+        <li> 팀 분위기가 조용해서 사일런스라고 팀명을 정했습니다</li>
+        <li> 전 재미를 느끼면 파고들기 시작하지만 재미를 못느끼면 안하는 단점이 있습니다</li>
+        <li> 제가 해야할 것을 최대한으로 끌어냅니다.</li>
+        <li> 꾸준히 멈추지 않고 한발한발 나아가 궁극적으로 좋은곳에 취업하는게 목표입니다</li>
+        <li> 자기가 맡은 일에 최선을 다하자</li>
+        <li> 블로그 링크 :
+            <a href="https://holloweyed-snail.tistory.com/">김민재</a>
+            <a href="https://holloweyed-snail.tistory.com/">전대학</a> <!-- 블로그 링크를 못받아서 동일하게 처리함-->
+            <a href="https://holloweyed-snail.tistory.com/">김솔찬</a>
+        </li>
+    </div>
+        <button class="back" onclick="backpage()"> 뒤로가기 </button>
+        <br><div class="mycards" id="comment-list"></div>
+        <div class="mypost">
+            <textarea class="form-control" id="comment" placeholder="댓글란"></textarea>
+            <button onclick="save_comment()" type="button" class="btn btn-dark">응원 남기기</button>
+        </div>
+
+</body>
+</html>
